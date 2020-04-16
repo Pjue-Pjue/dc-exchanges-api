@@ -1,6 +1,9 @@
 package okex
 
-import dc_exchanges_api "dc-exchanges-api"
+import (
+	dc_exchanges_api "dc-exchanges-api"
+	"strconv"
+)
 
 //type OkClient struct {
 //	SpotClient    *SpotClient
@@ -25,4 +28,14 @@ func newOKExClient(apiKey, secretKey, passphrase string) *dc_exchanges_api.Clien
 
 	client := dc_exchanges_api.NewClient(config)
 	return client
+}
+
+func ParseFloat(s string) float64 {
+	f, _ := strconv.ParseFloat(s, 64)
+	return f
+}
+
+func ParseInt(s string) int {
+	i, _ := strconv.ParseInt(s, 10, 64)
+	return int(i)
 }
