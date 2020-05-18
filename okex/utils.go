@@ -40,3 +40,8 @@ func JsonString2Struct(jsonString string, result interface{}) error {
 	err := json.Unmarshal(jsonBytes, result)
 	return err
 }
+func GetInstrumentOrderIdUri(uri string, instrumentId string, id string) string {
+	uri = strings.Replace(uri, "{instrument_id}", instrumentId, -1)
+	uri = strings.Replace(uri, "{order_id}", id, -1)
+	return uri
+}

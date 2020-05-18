@@ -118,19 +118,19 @@ type FuturesFixedAccountContracts struct {
 }
 
 type FutureLeverage struct {
-	MarginMode string `json:"margin_mode"`
-	CrossLeverage CrossLeverageItem `json:"cross_leverage"`
+	MarginMode     string              `json:"margin_mode"`
+	CrossLeverage  CrossLeverageItem   `json:"cross_leverage"`
 	FixedLeverages []FixedLeverageItem `json:"fixed_leverages"`
 }
 
 type CrossLeverageItem struct {
-	Underlying string `json:"underlying"`
-	Leverage float64 `json:"leverage,string"`
+	Underlying string  `json:"underlying"`
+	Leverage   float64 `json:"leverage,string"`
 }
 
 type FixedLeverageItem struct {
-	InstrumentId string `json:"instrument_id"`
-	LongLeverage float64 `json:"long_leverage"`
+	InstrumentId  string  `json:"instrument_id"`
+	LongLeverage  float64 `json:"long_leverage"`
 	ShortLeverage float64 `json:"short_leverage"`
 }
 
@@ -158,4 +158,71 @@ type Instrument struct {
 	SettlementCurrency  string  `json:"settlement_currency"`
 	IsInverse           bool    `json:"is_inverse,string"`
 	ContractValCurrency string  `json:"contract_val_currency"`
+}
+
+type CrossPositionResult struct {
+	Direction    string `json:"direction"`
+	ErrorCode    string `json:"error_code"`
+	ErrorMessage string `json:"error_message"`
+	InstrumentID string `json:"instrument_id"`
+	Result       bool   `json:"result"`
+}
+
+type SettlementItem struct {
+	ClawbackLoss    string `json:"clawback_loss"`
+	ClawbackRate    string `json:"clawback_rate"`
+	InstrumentID    string `json:"instrument_id"`
+	Reserve         string `json:"reserve"`
+	SettlementPrice string `json:"settlement_price"`
+	Timestamp       string `json:"timestamp"`
+	Type            string `json:"type"`
+}
+
+type PostMarginModeResult struct {
+	MarginMode string `json:"margin_mode"`
+	Result     bool   `json:"result"`
+	Underlying string `json:"underlying"`
+}
+
+type FutureNewOrderParams struct {
+	InstrumentId string `json:"instrument_id"`
+	ClientOid    string `json:"client_oid"`
+	Type         string `json:"type"`
+	OrderType    string `json:"order_type"`
+	Price        string `json:"price"`
+	Size         string `json:"size"`
+	MatchPrice   string `json:"match_price"`
+}
+
+type FutureNewOrderResult struct {
+	ClientOid    string `json:"client_oid"`
+	ErrorCode    string `json:"error_code"`
+	ErrorMessage string `json:"error_message"`
+	OrderID      string `json:"order_id"`
+	Result       bool   `json:"result"`
+}
+
+type CancelResult struct {
+	InstrumentId string `json:"instrument_id"`
+	FutureNewOrderResult
+}
+
+type EstimatedPriceResult struct {
+	SettlementPrice string `json:"settlement_price"`
+	BaseInstrumentItem
+}
+
+type RateResult struct {
+	Rate         string `json:"rate"`
+	BaseInstrumentItem
+}
+
+type IndexInfo struct {
+	Index string `json:"index"`
+	BaseInstrumentItem
+}
+
+type BaseInstrumentItem struct {
+	InstrumentID    string `json:"instrument_id"`
+	Timestamp       string `json:"timestamp"`
 }

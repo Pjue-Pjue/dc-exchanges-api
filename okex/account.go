@@ -5,15 +5,15 @@ import (
 	"strconv"
 )
 
-type AccountClient struct {
+type AccountOKEXClient struct {
 	client *dc_exchanges_api.Client
 }
 
-func NewAccountOKEXClient(apiKey, secretKey, passphrase string) *AccountClient {
-	return &AccountClient{client: newOKExClient(apiKey, secretKey, passphrase)}
+func NewAccountOKEXClient(apiKey, secretKey, passphrase string, endPoint string) *AccountOKEXClient {
+	return &AccountOKEXClient{client: newOKExClient(apiKey, secretKey, passphrase, endPoint)}
 }
 
-func (c *AccountClient) GetAssetValuation(accountType int, valuationCurrency string) (AssetValuation, error) {
+func (c *AccountOKEXClient) GetAssetValuation(accountType int, valuationCurrency string) (AssetValuation, error) {
 	r := AssetValuation{}
 	params := map[string]string{}
 	if accountType >= 0 {

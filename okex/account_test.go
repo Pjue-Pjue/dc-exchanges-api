@@ -3,7 +3,7 @@ package okex
 import "testing"
 
 func TestAccountClient_GetAssetValuation(t *testing.T) {
-	c := NewAccountOKEXClient("", "", "")
+	c := NewAccountOKEXClient("", "", "", "https://www.okex.me/")
 	res, err := c.GetAssetValuation(0, VALUATEUSD)
 	if err != nil {
 		t.Log(err.Error())

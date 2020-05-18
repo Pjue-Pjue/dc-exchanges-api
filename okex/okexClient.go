@@ -14,10 +14,10 @@ import (
 //}
 
 
-func newOKExClient(apiKey, secretKey, passphrase string) *dc_exchanges_api.Client {
+func newOKExClient(apiKey, secretKey, passphrase string, endPoint string) *dc_exchanges_api.Client {
 	var config dc_exchanges_api.Config
 	//config.Endpoint = "https://www.okex.com/"
-	config.Endpoint = "https://www.okex.me/"
+	config.Endpoint = endPoint // "https://www.okex.me/"
 	config.ApiKey = apiKey
 	config.SecretKey = secretKey
 	config.Passphrase = passphrase
