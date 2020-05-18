@@ -45,3 +45,11 @@ func GetInstrumentOrderIdUri(uri string, instrumentId string, id string) string 
 	uri = strings.Replace(uri, "{order_id}", id, -1)
 	return uri
 }
+
+func GetCurrencyUri(uri string, currency string) string {
+	return strings.Replace(uri, "{currency}", currency, -1)
+}
+
+func GetOrderIdUri(uri string, id string) string {
+	return strings.Replace(uri, "{order_id}", id, -1)
+}
