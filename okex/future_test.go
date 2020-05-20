@@ -31,7 +31,7 @@ func TestFutureClient_GetPositionByInstrumentId(t *testing.T) {
 
 func TestFutureClient_GetFutureLeverageByUnderlying(t *testing.T) {
 	c := NewFutureOKEXClient("", "", "","https://www.okex.me/")
-	res, err := c.GetFutureLeverageByUnderlying("XRP-USD")
+	res, err := c.GetFuturesLeverageByUnderlying("XRP-USD")
 	if err != nil {
 		t.Log(err.Error())
 		return
@@ -41,7 +41,7 @@ func TestFutureClient_GetFutureLeverageByUnderlying(t *testing.T) {
 
 func TestFutureClient_GetFutureInstrumentByCurrency(t *testing.T) {
 	c := NewFutureOKEXClient("", "", "","https://www.okex.me/")
-	res, err := c.GetFutureInstrumentByCurrency("BTC", "USD")
+	res, err := c.GetFuturesInstrumentByCurrency("BTC", "USD")
 	if err != nil {
 		t.Log(err)
 		return
@@ -51,7 +51,7 @@ func TestFutureClient_GetFutureInstrumentByCurrency(t *testing.T) {
 
 func TestFutureClient_GetFutureSettlementHistory(t *testing.T) {
 	c := NewFutureOKEXClient("", "", "","https://www.okex.me/")
-	res, err := c.GetFutureSettlementHistory("BTC-USD-200626", time.Now().Add(-120 * time.Hour), time.Now(), 10)
+	res, err := c.GetFuturesSettlementHistory("BTC-USD-200626", time.Now().Add(-120 * time.Hour), time.Now(), 10)
 	if err != nil {
 		t.Log(err)
 		return

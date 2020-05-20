@@ -23,7 +23,7 @@ func NewFutureOKEXClient(apiKey, secretKey, passphrase string, endPoint string) 
 // 获取盘口
 func (c *FutureClient) GetOrderBook(instrumentId string, options map[string]string) (OrderBook, error) {
 	var ob OrderBook
-	var orderBook FutureOrderbookResult
+	var orderBook OrderBookResult
 	params := map[string]string{}
 	if options != nil {
 		if v, ok := options["size"]; ok {
@@ -84,7 +84,7 @@ func (c *FutureClient) GetEstimatedPrice(instrumentId string) (EstimatedPriceRes
 }
 
 // 获取合约信息
-func (c *FutureClient) GetFutureInstrumentByCurrency(base string, quote string) ([]Instrument, error) {
+func (c *FutureClient) GetFuturesInstrumentByCurrency(base string, quote string) ([]Instrument, error) {
 	var instruments []Instrument
 	_, _, err := c.client.Request("GET", FUTURES_INSTRUMENTS, nil, &instruments)
 	if err != nil {
@@ -111,21 +111,21 @@ func (c *FutureClient) GetPositionByInstrumentId(instrumentId string) (FuturesPo
 }
 
 // 单个币种合约账户信息
-func (c *FutureClient) GetFutureAccountByUnderlying(underlying string) (FutureAccount, error) {
+func (c *FutureClient) GetFuturesAccountByUnderlying(underlying string) (FutureAccount, error) {
 	var result FutureAccount
 	_, _, err := c.client.Request("GET", GetUnderlyingUri(FUTURES_ACCOUNT, underlying), nil, &result)
 	return result, err
 }
 
 // 获取合约币种杠杆倍数
-func (c *FutureClient) GetFutureLeverageByUnderlying(underlying string) (FutureLeverage, error) {
+func (c *FutureClient) GetFuturesLeverageByUnderlying(underlying string) (FutureLeverage, error) {
 	var result FutureLeverage
 	_, response, err := c.client.Request("GET", GetUnderlyingUri(FUTURES_LEVERAGE, underlying), nil, nil)
 	if err != nil {
 		return FutureLeverage{}, err
 	}
 	//fmt.Println(response.Header.Get("resultDataJsonString"))
-	result, err = c.parseFutureLeverage(response, err, underlying)
+	result, err = c.parseFuturesLeverage(response, err, underlying)
 	return result, err
 }
 
@@ -140,7 +140,7 @@ func (c *FutureClient) PostFuturesAccountsMarginNode(underlying string, marginMo
 }
 
 // 设定合约杠杆
-func (c *FutureClient) PostFutureLeverageByUnderlying(currency string, leverage int, optionalParams map[string]string) error {
+func (c *FutureClient) PostFuturesLeverageByUnderlying(currency string, leverage int, optionalParams map[string]string) error {
 	uri := GetUnderlyingUri(FUTURES_LEVERAGE, currency)
 	params := make(map[string]string)
 	params["leverage"] = strconv.Itoa(leverage)
@@ -193,7 +193,7 @@ func parsePositions(response *http.Response, err error) (FuturesPosition, error)
 	return position, nil
 }
 
-func (c *FutureClient) parseFutureLeverage(response *http.Response, err error, underlying string) (FutureLeverage, error) {
+func (c *FutureClient) parseFuturesLeverage(response *http.Response, err error, underlying string) (FutureLeverage, error) {
 	var leverageInfo FutureLeverage
 	if err != nil {
 		return leverageInfo, err
@@ -202,7 +202,7 @@ func (c *FutureClient) parseFutureLeverage(response *http.Response, err error, u
 	//fmt.Println(jsonString)
 	if strings.Contains(jsonString, "\"margin_mode\":\"fixed\"") {
 		currencies := strings.Split(underlying, "-")
-		instruments, err := c.GetFutureInstrumentByCurrency(currencies[0], currencies[1])
+		instruments, err := c.GetFuturesInstrumentByCurrency(currencies[0], currencies[1])
 		if err != nil {
 			return leverageInfo, err
 		}
@@ -247,7 +247,7 @@ func (c *FutureClient) parseFutureLeverage(response *http.Response, err error, u
 
 // 市价全平
 // 2次/2s （根据underlying，分别限速）
-func (c *FutureClient) FutureCrossPosition(instrumentId string, direction string) ([]byte, CrossPositionResult, error) {
+func (c *FutureClient) FuturesCrossPosition(instrumentId string, direction string) ([]byte, CrossPositionResult, error) {
 	var futureCrossPositionResult CrossPositionResult
 	params := make(map[string]string)
 	params["instrument_id"] = instrumentId
@@ -259,7 +259,7 @@ func (c *FutureClient) FutureCrossPosition(instrumentId string, direction string
 
 // 获取历史结算/交割记录
 // 1次/ 60s
-func (c *FutureClient) GetFutureSettlementHistory(instrumentId string, start, end time.Time, limit int) ([]SettlementItem, error) {
+func (c *FutureClient) GetFuturesSettlementHistory(instrumentId string, start, end time.Time, limit int) ([]SettlementItem, error) {
 	var result []SettlementItem
 	params := make(map[string]string)
 	params["instrument_id"] = instrumentId
@@ -276,7 +276,7 @@ func (c *FutureClient) GetFutureSettlementHistory(instrumentId string, start, en
 // type 1:开多 | 2:开空 | 3:平多 | 4:平空
 // order_type 0: 普通委托（order type不填或填0都是普通委托）| 1: 只做Maker（Post only）| 2: 全部成交或立即取消（FOK）| 3: 立即成交并取消剩余（IOC）| 4: 市价委托
 // match_price  是否以对手价下单(0:不是; 1:是)，默认为0，当取值为1时，price字段无效。当以对手价下单，order_type只能选择0（普通委托）
-func (c *FutureClient) PlaceFutureOrder(instrumentId string, pType int, orderType int, price float64, size float64, matchPrice int, clientOid string) ([]byte, FutureNewOrderResult, error) {
+func (c *FutureClient) PlaceFuturesOrder(instrumentId string, pType int, orderType int, price float64, size float64, matchPrice int, clientOid string) ([]byte, FutureNewOrderResult, error) {
 	var newOrderResult FutureNewOrderResult
 	var params FutureNewOrderParams
 	params.InstrumentId = instrumentId
@@ -299,3 +299,10 @@ func (c *FutureClient) CancelFuturesOrder(instrumentId string, id string) ([]byt
 	return respBody, result, err
 }
 
+// 获取订单信息
+// id 可以为client_id 也可以是orderID
+func (c *FutureClient) GetFuturesOrderInfo(instrumentId string, id string) (FutureOrderResult, error) {
+	var result FutureOrderResult
+	_, _, err := c.client.Request("GET",GetInstrumentOrderIdUri(FUTURES_ORDER_INFO,instrumentId,id), nil, &result)
+	return result, err
+}
